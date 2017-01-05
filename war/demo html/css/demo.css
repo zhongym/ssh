@@ -1,0 +1,43 @@
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,input,textarea,p,blockquote,th,td,hr,button,article,footer,header,menu,nav,section{margin:0; padding:0;}
+body, button, input, select, textarea { font-family: "黑体-简",tahoma,arial,"Hiragino Sans GB","微软雅黑", "宋体", sans-serif; }
+header{width: 100%; height:  4.5rem;    background-color: #ffffff; border-bottom: 1px solid #e5e5e5;}
+header .brack{position: absolute;height: 4.5rem;width: 4.1rem;top:0;left: 0;line-height: 4.5rem;text-align: center;}
+header .meu{position: absolute;right: 0;top: 0; height: 4.5rem;width: 4.1rem;line-height:  4.5rem;text-align: center;}
+* { box-sizing: border-box; }
+.main{ }
+.main .banner{width: 100%;position: relative;}
+.main .banner .slider-touch{width: 100%;height: 12.5rem;}
+.main .banner .slider-touch li{width: 100%; height: 12.5rem;position: absolute;  left: 0;  top: 0;}
+.main .banner .slider-touch li a{width: 100%;height: 12.5rem;display: block;}
+.main .banner .slider-touch li a img{width: 100%;height: auto;}
+.main .banner .slider-nav{ position: absolute; bottom: 0; width: 100%; text-align: center; height: 1.7rem; z-index: 10; }
+.main .banner .slider-nav .sd-cont{ display: inline-block; height: 1rem; line-height: 0.5rem; padding: 0.15rem 0.3rem 0 0.3rem; border-radius: 1rem; background-color: rgba(0,0,0,0.3); text-align: center; }
+.main .banner .slider-nav .sd-cont span{ display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; margin: 0 0.3rem; background-color: #fff; }
+
+.main .entry-nav{ width: 100%;height: 9rem;background-color: #fff;}
+.main .entry-nav .item{width: 25%; height: 9rem;padding-top: 1.2rem;float: left;}
+.main .entry-nav .item .pic{width:4.2rem;height: 4.2rem;    margin: 0 auto 0.8rem;}
+.main .entry-nav .item .pic img{    width: 100%; height: 4.2rem;}
+.main .entry-nav .item .sp-name{text-align: center;display: block;  font-size: 1.1rem; height: 1.5rem; line-height: 1.5rem;}
+
+.main .flash-sale{width: 100%;background-color: #f8f8f8;}
+.main .flash-sale .mt{width: 100%;padding-left: 0.8rem;height: 3.5rem;line-height: 3.5rem; font-size: 1.4rem; }
+.main .flash-sale .mt span{border-left: 0.3rem solid #f0226e; display: inline-block; line-height: 1.8rem; padding: 0 0.5rem; height: 1.8rem;}
+.main .flash-sale .mt i{color: #f0226e;font-style: normal;}
+.main .flash-sale .mc {width: 100%;background-color: #fff;height: 15.8rem;padding-top: 0.5rem;}
+.main .flash-sale .mc .slider-touch{ width: 100%;height: 12.5rem;overflow: hidden; position: relative; }
+.main .flash-sale .mc .slider-touch li{ position: absolute; width: 100%; height: 12.5rem; }
+.main .flash-sale .mc .slider-touch li .pic{ height: 12.5rem; width: 12.5rem; position: absolute; top: 0.5rem; left: 0.5rem; }
+.main .flash-sale .mc .slider-touch li .pic a{ display: block; }
+.main .flash-sale .mc .slider-touch li .pic a img{ height: 12.5rem; width: 12.5rem; }
+.main .flash-sale .mc .slider-touch li .rtc { width: 100%; height: 12.5rem; padding-left: 13.5rem; }
+.main .flash-sale .mc .slider-touch li .rtc .top { height: 2.2rem; line-height: 2.2rem; color: #666666; font-size: 1.2rem; /*background: url("../images/clock-icon.png") no-repeat scroll 2px 0.5rem / 1.35rem auto;*/ background-image: url("../images/clock-icon.png"); background-repeat:no-repeat; background-position: 2px 0.5rem; background-attachment:scroll; background-size: 1.35rem auto; border-bottom: 1px solid #e5e5e5;; padding-left: 1.8rem; }
+.main .flash-sale .mc .slider-touch li .rtc .top span{ color: #f0226e; font-size: 1.2rem; padding-left: 5px; }
+.main .flash-sale .mc .slider-touch li .rtc .buy-btn{
+
+    font-style: italic;
+    font-variant: small-caps;
+    font-weight:bold;
+}
+
+

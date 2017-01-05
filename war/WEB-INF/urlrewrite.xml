@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
+
+<!--
+
+    Configuration file for UrlRewriteFilter
+    http://tuckey.org/urlrewrite/
+
+-->
+<urlrewrite>
+
+<!--    <rule>
+    	<condition operator="notequal" next="and" type="request-uri">.*\.jsp</condition>
+    	<condition operator="notequal" next="and" type="request-uri">.*\.jspx</condition>
+    	<condition operator="notequal" next="and" type="request-uri">.*\.json</condition>
+    	<condition operator="notequal" next="and" type="request-uri">.*\.xml</condition>
+        <from>^(/.*\..*)$</from>
+        <to>/static$1</to>
+    </rule>
+    
+    <rule>
+        <note>
+            The rule means that requests to /test/status/ will be redirected to /rewrite-status
+            the url will be rewritten.
+        </note>
+        <from>/test/status/</from>
+        <to type="redirect">%{context-path}/rewrite-status</to>
+    </rule>
+
+    <outbound-rule>
+        <note>
+            The outbound-rule specifies that when response.encodeURL is called (if you are using JSTL c:url)
+            the url /rewrite-status will be rewritten to /test/status/.
+
+            The above rule and this outbound-rule means that end users should never see the
+            url /rewrite-status only /test/status/ both in thier location bar and in hyperlinks
+            in your pages.
+        </note>
+        <from>/rewrite-status</from>
+        <to>/test/status/</to>
+    </outbound-rule>-->
+
+
+    <!--
+
+    INSTALLATION
+
+        in your web.xml add...
+
+        <filter>
+            <filter-name>UrlRewriteFilter</filter-name>
+            <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+            <init-param>
+                <param-name>logLevel</param-name>
+                <param-value>WARN</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>UrlRewriteFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>
+
+     EXAMPLES
+
+     Redirect one url
+        <rule>
+            <from>/some/old/page.html</from>
+            <to type="redirect">/very/new/page.html</to>
+        </rule>
+
+    Redirect a directory
+        <rule>
+            <from>/some/olddir/(.*)</from>
+            <to type="redirect">/very/newdir/$1</to>
+        </rule>
+
+    Clean a url
+        <rule>
+            <from>/products/([0-9]+)</from>
+            <to>/products/index.jsp?product_id=$1</to>
+        </rule>
+    eg, /products/1234 will be passed on to /products/index.jsp?product_id=1234 without the user noticing.
+
+    Browser detection
+        <rule>
+            <condition name="user-agent">Mozilla/[1-4]</condition>
+            <from>/some/page.html</from>
+            <to>/some/page-for-old-browsers.html</to>
+        </rule>
+    eg, will pass the request for /some/page.html on to /some/page-for-old-browsers.html only for older
+    browsers whose user agent srtings match Mozilla/1, Mozilla/2, Mozilla/3 or Mozilla/4.
+
+    -->
+    <!--首页-->
+    <rule>
+        <note>首页</note>
+        <from>^/$</from>
+        <to>/index.ac</to>
+    </rule>
+    <rule>
+        <note>首页</note>
+        <from>^/index.jsp</from>
+        <to>/index.ac</to>
+    </rule>
+    <rule>
+        <note>首页</note>
+        <from>^/index.html</from>
+        <to>/index.ac</to>
+    </rule>
+    <rule>
+        <note>首页</note>
+        <from>^/index.htm$</from>
+        <to>/index.ac</to>
+    </rule>
+    <!--首页 end-->
+
+    <!--同城送产品详细-->
+    <rule>
+        <note>同城送产品详细</note>
+        <from>^/sendProduct-([0-9]+).html$</from>
+        <to>/citysend/sendProduct.ac?productId=$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/citysend/sendProduct.ac\?productId=([0-9]+)</from>
+        <to>/sendProduct-$1.html</to>
+    </outbound-rule>
+    <!--同城送产品详细 end-->
+
+    <!--服务预约详细-->
+    <rule>
+        <note>服务预约详细</note>
+        <from>^/serveProduct-([0-9]+).html$</from>
+        <to>/serve/serveProduct.ac?id=$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/serve/serveProduct.ac\?id=([0-9]+)</from>
+        <to>/serveProduct-$1.html</to>
+    </outbound-rule>
+    <!--服务预约详细 end-->
+
+    <!--产品详细-->
+    <rule>
+        <note>产品详细</note>
+        <from>^/product-([0-9]+).html$</from>
+        <to>/product.ac?id=$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/product.ac\?id=([0-9]+)</from>
+        <to>/product-$1.html</to>
+    </outbound-rule>
+
+    <rule>
+        <note>手机版产品详细</note>
+        <from>^/wap/product-([0-9]+).html$</from>
+        <to>/wap/product.ac?id=$1</to>
+    </rule>
+
+    <outbound-rule>
+        <from>^/wap/product.ac\?id=([0-9]+)</from>
+        <to>/wap/product-$1.html</to>
+    </outbound-rule>
+    <!--产品详细 end-->
+
+    <!--产品列表页-->
+    <rule>
+        <note>产品列表页</note>
+        <from>^/productlist-([0-9]+).html$</from>
+        <to>/productlist.ac?category=$1</to>
+
+    </rule>
+
+    <rule>
+        <note>产品列表页</note>
+        <from>^/productlist.html$</from>
+        <to>/productlist.ac</to>
+
+    </rule>
+
+
+    <rule>
+        <note>产品列表页</note>
+        <from>^/productlist-([0-9]+).html$</from>
+        <to>/productlist.ac?category=$1</to>
+
+    </rule>
+
+    <rule>
+        <note>产品列表页</note>
+        <from>^/productlist.html$</from>
+        <to>/productlist.ac</to>
+
+    </rule>
+
+    <!--产品列表页 end-->
+
+    <!--信息详细页-->
+    <rule >
+        <note>信息详细页面</note>
+        <from>^/mallNotice-([0-9]+)-([0-9]+).html$</from>
+        <to>/mallNotice.ac?infArticleId=$1&amp;categoryId=$2</to>
+    </rule>
+    <outbound-rule>
+        <from>^/mallNotice.ac\?infArticleId=([0-9]+)&amp;categoryId=([0-9]+)</from>
+        <to>/mallNotice-$1-$2.html</to>
+    </outbound-rule>
+    <!--信息详细页 end-->
+
+    <!--帮助中心-->
+    <rule>
+        <note>帮助中心</note>
+        <from>^/help.html$</from>
+        <to>/help.ac</to>
+    </rule>
+    <rule>
+        <note>帮助中心</note>
+        <from>^/help.htm$</from>
+        <to>/help.ac</to>
+    </rule>
+
+    <rule>
+        <note>帮助中心</note>
+        <from>^/help-([0-9]+).html$</from>
+        <to>/help.ac?infArticleId=$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/help.ac\?infArticleId=([0-9]+)</from>
+        <to>/help-$1.html</to>
+    </outbound-rule>
+    <!--帮助中心 end-->
+
+    <!--团购-->
+    <rule>
+        <note>团列表</note>
+        <from>^/tuanlist.html$</from>
+        <to>/tuanlist.ac</to>
+    </rule>
+    <rule>
+        <note>团列表</note>
+        <from>^/tuanlist.htm$</from>
+        <to>/tuanlist.ac</to>
+    </rule>
+    <!--团购 end-->
+
+    <!--抢购-->
+    <rule>
+        <note>抢购列表</note>
+        <from>^/panicList.html$</from>
+        <to>/panicList.ac</to>
+    </rule>
+    <rule>
+        <note>抢购列表</note>
+        <from>^/panicList.htm$</from>
+        <to>/panicList.ac</to>
+    </rule>
+    <rule>
+        <note>抢购列表</note>
+        <from>^/paniclist.html$</from>
+        <to>/panicList.ac</to>
+    </rule>
+    <rule>
+        <note>抢购列表</note>
+        <from>^/paniclist.htm$</from>
+        <to>/panicList.ac</to>
+    </rule>
+    <!--抢购 end-->
+
+    <!--品牌专区-->
+    <rule>
+        <note>品牌专区</note>
+        <from>^/brandZone.html$</from>
+        <to>/brandZone.ac</to>
+    </rule>
+    <rule>
+        <note>品牌专区</note>
+        <from>^/brandZone.htm$</from>
+        <to>/brandZone.ac</to>
+    </rule>
+    <!--品牌专区 end-->
+
+    <!--关于我们-->
+    <rule>
+        <note>关于我们</note>
+        <from>^/aboutUs.html$</from>
+        <to>/aboutUs.ac</to>
+    </rule>
+    <rule>
+        <note>关于我们</note>
+        <from>^/aboutUs-([0-9]+).html$</from>
+        <to>/aboutUs.ac?infArticleId=$1</to>
+    </rule>
+    <!--关于我们-->
+    <rule>
+        <note>新品列表</note>
+        <from>^/presellList.html$</from>
+        <to>/presellList.ac</to>
+    </rule>
+    <rule>
+        <note>新品列表</note>
+        <from>^/presellList.htm$</from>
+        <to>/presellList.ac</to>
+    </rule>
+
+    <!--新品详细-->
+    <rule>
+        <note>新品详细</note>
+        <from>^/presell-([0-9]+).html$</from>
+        <to>/presell.ac?id=$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/presell.ac\?id=([0-9]+)</from>
+        <to>/presell-$1.html</to>
+    </outbound-rule>
+
+    <rule>
+        <note>新品详细</note>
+        <from>^/wap/presell-([0-9]+).html$</from>
+        <to>/wap/presell.ac?id=$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/wap/presell.ac\?id=([0-9]+)</from>
+        <to>/wap/presell-$1.html</to>
+    </outbound-rule>
+    <!--积分专区-->
+
+    <rule>
+        <note>积分专区</note>
+        <from>^/integral.html$</from>
+        <to>/integral/integral.ac</to>
+    </rule>
+    <rule>
+        <note>积分专区</note>
+        <from>^/integral.htm$</from>
+        <to>/integral/integral.ac</to>
+    </rule>
+
+    <rule>
+        <note>投诉</note>
+        <from>^/suggest.html$</from>
+        <to>/suggest.ac</to>
+    </rule>
+
+    <rule>
+        <note>会员中心</note>
+        <from>^/module/member/$</from>
+        <to>/module/member/index.ac</to>
+    </rule>
+
+    <!--wap首页-->
+    <rule>
+        <note>首页</note>
+        <from>^/wap/index.jsp</from>
+        <to>/wap/index.ac</to>
+    </rule>
+    <rule>
+        <note>首页</note>
+        <from>^/wap/index.html</from>
+        <to>/wap/index.ac</to>
+    </rule>
+    <rule>
+        <note>首页</note>
+        <from>^/wap$</from>
+        <to>/wap/index.ac</to>
+    </rule>
+
+</urlrewrite>
+

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/tx
+   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+   http://www.springframework.org/schema/aop
+   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" default-autowire="byName" ><!--default-autowire="byName"-->
+
+    <!-- 属性文件读入,使用rapid中的JdbcPlaceholderConfigurer则可以从数据库读取配置信息 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="nullValue" value="[null]" />
+        <property name="locations">
+            <list>
+                <value>classpath*:appConfig.local.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--简单的配置方式-->
+    <!--<context:property-placeholder location="classpath*:appConfig.local.properties"/>-->
+
+    <!-- 添加数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"  destroy-method="close">
+        <property name="driverClassName" value="${app.dataSource.driver}" />
+        <property name="url" value="${app.dataSource.driverUrl}" />
+        <property name="username" value="${app.dataSource.username}" />
+        <property name="password" value="${app.dataSource.password}" />
+        <property name="maxActive" value="${app.dataSource.maxConnectionCount}" />
+        <property name="maxIdle" value="${app.dataSource.minConnectionCount}"/>
+        <property name="maxWait" value="3000"/>
+        <property name="defaultAutoCommit">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <!-- 配置会话工厂，连接 -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${app.dataSource.hibernateDialect}</prop>
+                <prop key="hibernate.show_sql">${app.hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+        <!--注解方式进行domain与表的映射-->
+        <property name="packagesToScan" value="com.zhong.module.*.domain" />
+        <!--进行xml方式进行domain与表的映射  sessionFactory换成LocalSessionFactoryBean-->
+       <!-- <property name="mappingResources">
+            <list>
+                <value>com.zhong.module.test.domain/petclinic.hbm.xml</value>
+            </list>
+        </property>-->
+    </bean>
+
+    <!--激活事务 以 @Transactional 标注来定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"  />
+
+    <!--事件管理器-->
+    <bean id="transactionManager"  class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+    <!--<context:annotation-config/>  使用context:component-scan组件扫描就不需要加这个了-->
+    <!--激活注解  当使用了组件扫描扫描器，就可以省略这个（因为组件扫描也会帮我们注册这几个bean后置处理器）-->
+    <!--<context:annotation-config/>
+        AutowiredAnnotationBeanPostProcessor、RequiredAnnotationBeanPostProcessor、
+        CommonAnnotationBeanPostProcessor以及PersistenceAnnotationBeanPostProcessor这4个BeanPostProcessor
+    -->
+
+    <!-- 组件扫描 dao -->
+    <context:component-scan base-package="com.zhong.module.*.dao"/>
+    <!--<bean id="testDao" class="com.zhong.module.test.dao.TestDao" autowire="byName"></bean>-->
+    <!--<bean id="test2Dao" class="com.zhong.module.test.dao.Test2Dao" autowire="byName"></bean>-->
+
+    <!-- 组件扫描 service -->
+    <context:component-scan base-package="com.zhong.module.*.service"/>
+    <!--<bean id="testService" class="com.zhong.module.test.service.TestService" autowire="constructor"></bean>-->
+
+    <!--@Aspect风格的 注解配置 aop-->
+    <!-- 启用注解自动代理@Aspect  将一个类变成切面 和<aop:advisor>元素一样
+        @Aspect 注解和<aop:advisor>元素区别：
+        @Aspect需要添加到类上，需要源码，而<aop:advisor>元素则可以添加任意类上（jar包上的类）
+    -->
+    <aop:aspectj-autoproxy />
+    <!--相当于注册了java:org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator（注解的aspectJ自动代理创建类）-->
+
+    <!-- 组件扫描 aop -->
+    <context:component-scan base-package="com.zhong.module.*.aop" />
+
+
+    <!--xml 方式配置事务
+    首先我们定义了 一个切面，它匹配 Service层定义的所有操作， 我们把该切面叫做 'servicesOption'。
+    然后我们用一个通知器（advisor）把这个切面与 'advice' 绑定在一起，
+     表示当 'servicesOption' 执行时，'txAdvice' 定义的通知逻辑将被执行。
+    -->
+<!--    <aop:config>
+        &lt;!&ndash;<aop:advisor advice-ref="tx-advice" pointcut="execution( public * com.zhong.module.*.service.*(..))"></aop:advisor>&ndash;&gt;
+        <aop:pointcut id="servicesOption" expression="execution( public * com.zhong.module.*.services.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="tx-advice" pointcut-ref="servicesOption"></aop:advisor>
+    </aop:config>
+    <tx:advice id="tx-advice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="*" read-only="false" ></tx:method>&lt;!&ndash;rollback-for="" 指定当遇到什么异常时，才回滚事务，相反的no-rollback-for&ndash;&gt;
+        </tx:attributes>
+    </tx:advice>-->
+
+
+    <!--Aspect 的 xml配置aop-->
+    <!--<aop:config>
+        &lt;!&ndash;配置切面&ndash;&gt;
+        <aop:aspect ref="testServiceAop"  >
+            &lt;!&ndash;配置切入点&ndash;&gt;
+            <aop:pointcut id="serviceOption" expression="execution(* com.zhong.module.test.service.TestService.myMethod(..))"></aop:pointcut>
+            &lt;!&ndash;配置通知&ndash;&gt;
+            <aop:before method="xmlMethod" pointcut-ref="serviceOption"></aop:before>
+        </aop:aspect>
+    </aop:config>-->
+    <!--<bean id="advice" class="com.zhong.module.test.aop.TestServiceAop"></bean>-->
+    <!--xml和注解方式是可能一起使用的 TestServiceAop 添加了@Component 就不需要在这些使用Bean定义了 -->
+
+     <!--xml配置 通过切面为目标类引用新的方法-->
+   <!-- <aop:config>
+        &lt;!&ndash;配置切面&ndash;&gt;
+        <aop:aspect ref="testServiceAop" >
+            <aop:declare-parents types-matching="com.zhong.module.test.service.TestService" implement-interface="com.zhong.service.test.ITestServiceExt"
+             delegate-ref="testServiceExt"
+            ></aop:declare-parents>
+        </aop:aspect>
+        &lt;!&ndash;default-impl="com.zhong.module.test.service.TestServiceExt"&ndash;&gt;
+    </aop:config>-->
+
+    <!--spring jdbc操作-->
+   <!-- <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <bean id="simpleJdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+        <constructor-arg index="0" ref="dataSource"></constructor-arg>
+    </bean>-->
+
+    <!--<bean  name="person" class="hibernate.deom.domain.Person"></bean>-->
+
+
+</beans>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/tx
+   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+   http://www.springframework.org/schema/aop
+   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" default-autowire="byName" ><!--default-autowire="byName"-->
+
+    <description>多数据源事务测试</description>
+
+    <!-- 属性文件读入,使用rapid中的JdbcPlaceholderConfigurer则可以从数据库读取配置信息 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="nullValue" value="[null]" />
+        <property name="locations">
+            <list>
+                <value>classpath*:appConfig.local.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!--简单的配置方式-->
+    <!--<context:property-placeholder location="classpath*:appConfig.local.properties"/>-->
+
+    <!-- 添加数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"  destroy-method="close">
+        <property name="driverClassName" value="${app.dataSource.driver}" />
+        <property name="url" value="${app.dataSource.driverUrl}" />
+        <property name="username" value="${app.dataSource.username}" />
+        <property name="password" value="${app.dataSource.password}" />
+        <property name="maxActive" value="${app.dataSource.maxConnectionCount}" />
+        <property name="maxIdle" value="${app.dataSource.minConnectionCount}"/>
+        <property name="maxWait" value="3000"/>
+        <property name="defaultAutoCommit">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <!-- 配置会话工厂，连接 -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${app.dataSource.hibernateDialect}</prop>
+                <prop key="hibernate.show_sql">${app.hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!--<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>-->
+            </props>
+        </property>
+        <!--注解方式进行domain与表的映射-->
+        <property name="packagesToScan" value="com.zhong.module.test.domain" />
+        <!--进行xml方式进行domain与表的映射  sessionFactory换成LocalSessionFactoryBean-->
+       <!-- <property name="mappingResources">
+            <list>
+                <value>com.zhong.module.test.domain/petclinic.hbm.xml</value>
+            </list>
+        </property>-->
+    </bean>
+
+    <!--激活事务 以 @Transactional 标注来定义事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--事件管理器-->
+    <bean id="transactionManager"  class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+    <!-- 组件扫描 dao -->
+    <context:component-scan base-package="com.zhong.module.*.dao"/>
+
+    <!-- 组件扫描 service -->
+    <context:component-scan base-package="com.zhong.module.*.service"/>
+
+    <aop:aspectj-autoproxy />
+    <!--相当于注册了java:org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator（注解的aspectJ自动代理创建类）-->
+
+    <!-- 组件扫描 aop -->
+    <context:component-scan base-package="com.zhong.module.*.aop" />
+
+
+    <!--中间库数据源-->
+    <bean id="dockingDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${app.docking.dataSource.driver}"/>
+        <property name="url" value="${app.docking.dataSource.driverUrl}"/>
+        <property name="username" value="${app.docking.dataSource.username}"/>
+        <property name="password" value="${app.docking.dataSource.password}"/>
+        <property name="poolPreparedStatements">
+            <value>false</value>
+        </property>
+        <property name="maxActive" value="${app.docking.dataSource.maxConnectionCount}"/>
+        <property name="minIdle" value="${app.docking.dataSource.minConnectionCount}"/>
+        <property name="removeAbandoned">
+            <value>false</value>
+        </property>
+        <property name="defaultAutoCommit">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="dockingSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dockingDataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.zhong.module.docking.domain</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${app.dataSource.hibernateDialect}</prop>
+                <prop key="hibernate.show_sql">${app.hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!--<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="dockingTransactionManager"  />
+
+    <bean id="dockingTransactionManager"  class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="dockingSessionFactory"></property>
+    </bean>
+</beans>

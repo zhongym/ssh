@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-autowire="byName">
+
+
+    <mvc:annotation-driven />
+
+    <!-- 自动搜索@Controller标注的类 -->
+    <context:component-scan base-package="com.zhong.module.*.controller"></context:component-scan>
+    <!--<context:component-scan base-package="com.zhong.commons.controller"/>-->
+
+
+    <bean id="defaultHandler" class="org.springframework.web.servlet.HandlerExecutionChain">
+        <constructor-arg index="0">
+            <!--当没找到匹配的处理器，就会用这个默认的处理器-->
+            <bean class="com.zhong.commons.controller.EmptyHander"/>
+        </constructor-arg>
+    </bean>
+
+    <!--注解映射器-->
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+
+    <!--注解适配器-->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <util:list id="beanList">
+                <ref bean="mappingJacksonHttpMessageConverter"/>
+            </util:list>
+        </property>
+    </bean>
+    <bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+
+    <!--多 视图解析器-->
+    <!-- 根据客户端的不同的请求决定不同的view进行响应, 如 /blog/1.json /blog/1.xml -->
+    <bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="defaultContentType" value="text/html"/>
+        <!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json"/>
+                <entry key="xml" value="application/xml"/>
+                <entry key="ac" value="text/html"/>
+            </map>
+        </property>
+        <!-- 用于开启 /userinfo/123?format=json 的支持 -->
+        <property name="favorParameter" value="false"/>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+                    <property name="prefix" value="/template/green/"/>
+                    <property name="suffix" value=".jsp"/>
+                </bean>
+               </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <!-- for application/json -->
+                <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+                    <property name="objectMapper" ref="hibernateAwareObjectMapper"></property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+    <bean id="hibernateAwareObjectMapper"  class="org.codehaus.jackson.map.ObjectMapper"></bean>
+
+</beans>
