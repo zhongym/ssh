@@ -60,4 +60,27 @@ public class Person {
                 ", age=" + age +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        if (id != null ? !id.equals(person.id) : person.id != null) return false;
+        if (age != null ? !age.equals(person.age) : person.age != null) return false;
+        if (name != null ? !name.equals(person.name) : person.name != null) return false;
+        return events != null ? events.equals(person.events) : person.events == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (age != null ? age.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (events != null ? events.hashCode() : 0);
+        return result;
+    }
 }

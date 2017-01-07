@@ -6,9 +6,12 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">org.gjt.mm.mysql.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost/ssh?characterEncoding=UTF-8</property>
-        <property name="connection.username">root</property>
-        <property name="connection.password">root</property>
+        <!--<property name="connection.url">jdbc:mysql://localhost/ssh?characterEncoding=UTF-8</property>-->
+        <!--<property name="connection.username">root</property>-->
+        <!--<property name="connection.password">123456</property>-->
+    <property name="connection.url">jdbc:mysql://192.168.1.89/ssh?characterEncoding=UTF-8</property>
+        <property name="connection.username">laimi_test_010</property>
+        <property name="connection.password">sMOQ5gKK8vX6qG9</property>
 
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">1</property>
@@ -19,8 +22,15 @@
         <!-- Enable Hibernate's automatic session context management -->
         <property name="current_session_context_class">thread</property>
 
-        <!-- Disable the second-level cache  -->
-        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+         <!--Disable the second-level cache  -->
+        <!-- 开启二级缓存 -->
+        <!--<property name="hibernate.cache.use_second_level_cache">true</property>-->
+        <!-- 二级缓存的提供类 在hibernate4.0版本以后我们都是配置这个属性来指定二级缓存的提供类-->
+        <!--<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>-->
+        <!-- 二级缓存配置文件的位置 -->
+        <!--<property name="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</property>-->
+        <!--开启查询缓存-->
+        <!--<property name="hibernate.cache.use_query_cache">true</property>-->
 
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">true</property>
@@ -28,8 +38,13 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
+        <!--数据库事务隔离级别-->
+        <!--<property name="connection.isolation">2</property>-->
+
+
         <mapping resource="hibernate/deom/domain/Event.hbm.xml"/>
         <mapping resource="hibernate/deom/domain/Person.hbm.xml"/>
+
     </session-factory>
 
 </hibernate-configuration>

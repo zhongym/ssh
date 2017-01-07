@@ -8,10 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Created by zhong on 2016/6/5.
@@ -160,7 +159,7 @@ public  class HibenateTest {
      * 单元测试方法之前执行
      */
     @Before
-    public void initEve(){
+    public void initEve() throws SQLException {
          sessionFactory= HibernateUtil.getSessionFactory();
          session = sessionFactory.openSession();
          transaction = session.beginTransaction();
@@ -230,17 +229,90 @@ public  class HibenateTest {
     @Test
     public void testCache(){
 
-        Person o = (Person) session.get(Person.class, 1L);
-        o.setName("newe");
-        session.setFlushMode(FlushMode.MANUAL);
-        List<Person> list = session.createCriteria(Person.class).list();
-        System.out.println(o==list.get(0));
-        System.out.println(o==list.get(1));
-        System.out.println(list.get(0).getName());
-        System.out.println(list.get(1).getName());
 
-        List list1 = session.createSQLQuery("select * from PERSON").addEntity(Person.class).list();
-        System.out.println(list1.get(0)==o);
+        Person o = (Person) session.get(Person.class, 1L,LockOptions.UPGRADE);
+        System.out.println(o.getName());
+    }
+
+    @Test
+    public void testCache1(){
+        List list = session.createSQLQuery("select * from PERSON where PERSION_ID=1 lock in share mode").list();
+        System.out.println(list.get(0));
+    }
+
+    @Test
+    public void testCache3(){
+        Person o = (Person) session.get(Person.class, 1L);
+        System.out.println(o.getName());
+        session.clear();
+        o = (Person) session.get(Person.class, 1L);
+    }
+
+
+    /**
+     * 一个持久化对象，不管修改了多少次其属性，只会发出一条update sql
+     *
+     */
+    @Test
+    public void testCache4(){
+        for (int i=0;i<4;i++){
+            Person o = (Person) session.get(Person.class, 1L);
+            o.setAge(i);
+            System.out.println(o.getAge());
+        }
+
+//        Hibernate: select person0_.PERSION_ID as PERSION1_2_0_, person0_.age as age2_0_, person0_.name as name2_0_ from PERSON person0_ where person0_.PERSION_ID=?
+//        0
+//        1
+//        2
+//        3
+//        Hibernate: update PERSON set age=?, name=? where PERSION_ID=?
+    }
+
+    /**
+     *  并不是所有查询之前都会flush()
+     */
+    @Test
+    public void testCache5(){
+        Person o = (Person) session.get(Person.class, 1L);
+        o.setAge(new Random().nextInt(2000));
+session.flush();
+         o = (Person) session.get(Person.class, 2L);
+        System.out.println("---");
+
+//        Hibernate: select person0_.PERSION_ID as PERSION1_2_0_, person0_.age as age2_0_, person0_.name as name2_0_ from PERSON person0_ where person0_.PERSION_ID=?
+//        Hibernate: select person0_.PERSION_ID as PERSION1_2_0_, person0_.age as age2_0_, person0_.name as name2_0_ from PERSON person0_ where person0_.PERSION_ID=?
+//        ---
+//        Hibernate: update PERSON set age=?, name=? where PERSION_ID=?
+    }
+
+    /**
+     *  当查询所有，或者 条件查询的时候，会调用flush()方法，发出update语句
+     */
+    @Test
+    public void testCache6(){
+            Person o = (Person) session.get(Person.class, 1L);
+            o.setAge(2000);
+
+            List list = session.createCriteria(Person.class).list();
+            System.out.println("---");
+
+//        Hibernate: select person0_.PERSION_ID as PERSION1_2_0_, person0_.age as age2_0_, person0_.name as name2_0_ from PERSON person0_ where person0_.PERSION_ID=?
+//        Hibernate: update PERSON set age=?, name=? where PERSION_ID=?
+//        Hibernate: select this_.PERSION_ID as PERSION1_2_0_, this_.age as age2_0_, this_.name as name2_0_ from PERSON this_
+//        ---
+    }
+
+
+
+    @Test
+    public void testIterate(){
+        Iterator iterate = session.createQuery("from Person p").iterate();
+        while (iterate.hasNext()){
+            Person person= (Person) iterate.next();
+            System.out.println(person.getName());
+
+        }
     }
 
     private static  Integer[] val;
