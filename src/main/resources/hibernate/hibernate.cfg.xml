@@ -44,6 +44,7 @@
 
         <mapping resource="hibernate/deom/domain/Event.hbm.xml"/>
         <mapping resource="hibernate/deom/domain/Person.hbm.xml"/>
+        <mapping resource="hibernate/deom/domain/Student.hbm.xml"/>
 
     </session-factory>
 

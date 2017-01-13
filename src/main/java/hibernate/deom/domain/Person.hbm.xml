@@ -4,12 +4,13 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="hibernate.deom.domain.Person" table="PERSON" dynamic-update="false" dynamic-insert="false" >
+    <class name="hibernate.deom.domain.Person" table="PERSON" dynamic-update="true" dynamic-insert="true" >
         <id name="id" column="PERSION_ID">
             <generator class="native"/>
         </id>
         <property name="age" type="integer" />
         <property name="name" />
+        <property name="dates" type="timestamp" />
         <set name="events" table="PERION_EVENT" inverse="true" lazy="true">
             <key column="PERION_ID"></key>
             <many-to-many column="EVENT_ID" class="hibernate.deom.domain.Event"></many-to-many>

@@ -2,6 +2,7 @@ package com.zhong.hibenaterdemo;
 
 import hibernate.deom.domain.Event;
 import hibernate.deom.domain.Person;
+import hibernate.deom.domain.Student;
 import org.hibernate.*;
 import org.junit.After;
 import org.junit.Before;
@@ -303,7 +304,40 @@ session.flush();
 //        ---
     }
 
+    @Test
+    public void testCache7(){
+        Person o =new Person(10,"asfdjklasdflksa");
+        session.save(o);
+        System.out.println(o);
+        o= (Person) session.get(Person.class,o.getId());
+        System.out.println(o);
+        session.refresh(o);
+        System.out.println(o);
+        session.flush();
 
+        o.setAge(100);
+
+        session.flush();
+
+
+//        Hibernate: select person0_.PERSION_ID as PERSION1_2_0_, person0_.age as age2_0_, person0_.name as name2_0_ from PERSON person0_ where person0_.PERSION_ID=?
+//        Hibernate: update PERSON set age=?, name=? where PERSION_ID=?
+//        Hibernate: select this_.PERSION_ID as PERSION1_2_0_, this_.age as age2_0_, this_.name as name2_0_ from PERSON this_
+//        ---
+    }
+
+    @Test
+    public void testId(){
+        Student student = new Student();
+        student.setName("afsfdsa");
+        session.save(student);
+        System.out.println(student);
+        student.setName("asfasfaad");
+        System.out.println(student);
+
+        Object o = session.get(Student.class, student.getStudentId());
+        System.out.println(o);
+    }
 
     @Test
     public void testIterate(){

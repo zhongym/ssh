@@ -1,5 +1,8 @@
 package hibernate.deom.domain;
 
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +13,7 @@ public class Person {
     private Long id;
     private Integer age;
     private String name;
+    private Date dates;
     private Set events = new HashSet();
 
     public Person() {
@@ -52,12 +56,21 @@ public class Person {
         this.events = events;
     }
 
+    public Date getDates() {
+        return dates;
+    }
+
+    public void setDates(Date dates) {
+        this.dates = dates;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
+                "id=" + id +
                 ", age=" + age +
+                ", name='" + name + '\'' +
+                ", dates=" + dates +
                 '}';
     }
 

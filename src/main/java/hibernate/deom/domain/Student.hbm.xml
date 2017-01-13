@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="hibernate.deom.domain.Student" table="STUDENT" dynamic-update="true" dynamic-insert="true" >
+        <id name="studentId" column="PERSION_ID">
+            <generator class="uuid"/>
+        </id>
+        <property name="name" />
+    </class>
+
+</hibernate-mapping>
