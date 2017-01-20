@@ -40,7 +40,8 @@ public class TestService extends BaseService<Test> implements ITestService {
     @Override
     @Transactional()
     public void save(Test test) throws Exception {
-        testDao.save(test);
+        testDao.saveOrUpdate(test);
+        System.out.println("testservice.save() ");
     }
 
     @Override

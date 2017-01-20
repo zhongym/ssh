@@ -48,7 +48,7 @@ public class TextMergeDemo {
         if(!files.exists())
             return;
        BufferedReader reader = new BufferedReader(new FileReader(files));
-        String line=null;
+        String line;
         while ((line=reader.readLine())!=null){
             newFile.write(line);
             newFile.newLine();

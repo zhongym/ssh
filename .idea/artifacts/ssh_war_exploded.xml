@@ -8,6 +8,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="module" name="JUnit4" module-name="ssh" />
+          <element id="library" level="project" name="lib" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="ssh/web/Web" />

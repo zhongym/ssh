@@ -85,7 +85,7 @@
     <context:component-scan base-package="com.zhong.module.*.aop" />
 
 
-    <!--中间库数据源-->
+  <!--  &lt;!&ndash;中间库数据源&ndash;&gt;
     <bean id="dockingDataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="${app.docking.dataSource.driver}"/>
         <property name="url" value="${app.docking.dataSource.driverUrl}"/>
@@ -117,7 +117,7 @@
                 <prop key="hibernate.show_sql">${app.hibernate.show_sql}</prop>
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <!--<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>-->
+                &lt;!&ndash;<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>&ndash;&gt;
             </props>
         </property>
     </bean>
@@ -126,5 +126,5 @@
 
     <bean id="dockingTransactionManager"  class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="dockingSessionFactory"></property>
-    </bean>
+    </bean>-->
 </beans>

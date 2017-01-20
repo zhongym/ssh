@@ -27,6 +27,10 @@ public class Test implements Serializable{
     @Column(name = "TIME", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
     private Date time;
 
+    @Version
+    @Column(name = "verion", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+    private Integer verion;
+
     public Test() {
     }
 
@@ -67,6 +71,14 @@ public class Test implements Serializable{
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public Integer getVerion() {
+        return verion;
+    }
+
+    public void setVerion(Integer verion) {
+        this.verion = verion;
     }
 
     @Override

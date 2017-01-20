@@ -6,12 +6,12 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">org.gjt.mm.mysql.Driver</property>
-        <!--<property name="connection.url">jdbc:mysql://localhost/ssh?characterEncoding=UTF-8</property>-->
-        <!--<property name="connection.username">root</property>-->
-        <!--<property name="connection.password">123456</property>-->
-    <property name="connection.url">jdbc:mysql://192.168.1.89/ssh?characterEncoding=UTF-8</property>
+        <property name="connection.url">jdbc:mysql://localhost/ssh?characterEncoding=UTF-8</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">123456</property>
+        <!--<property name="connection.url">jdbc:mysql://192.168.1.89/ssh?characterEncoding=UTF-8</property>
         <property name="connection.username">laimi_test_010</property>
-        <property name="connection.password">sMOQ5gKK8vX6qG9</property>
+        <property name="connection.password">sMOQ5gKK8vX6qG9</property>-->
 
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">1</property>
@@ -39,7 +39,7 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!--数据库事务隔离级别-->
-        <!--<property name="connection.isolation">2</property>-->
+        <!--<property name="connection.isolation">4</property>-->
 
 
         <mapping resource="hibernate/deom/domain/Event.hbm.xml"/>

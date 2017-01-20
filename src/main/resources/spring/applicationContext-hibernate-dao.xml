@@ -63,7 +63,7 @@
     </bean>
 
     <!--激活事务 以 @Transactional 标注来定义事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager"  />
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!--事件管理器-->
     <bean id="transactionManager"  class="org.springframework.orm.hibernate3.HibernateTransactionManager">

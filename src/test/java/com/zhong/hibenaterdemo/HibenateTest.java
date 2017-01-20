@@ -340,6 +340,14 @@ session.flush();
     }
 
     @Test
+    public void testTransaction(){
+        System.out.println("");
+//        Person o1 = (Person) session.get(Person.class, 2L);
+        Person o = (Person) session.get(Person.class, 1L);
+        System.out.println(o);
+    }
+
+    @Test
     public void testIterate(){
         Iterator iterate = session.createQuery("from Person p").iterate();
         while (iterate.hasNext()){

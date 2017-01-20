@@ -1,7 +1,11 @@
 package com.zhong.module.test.aop;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@Order(1) //通知的优先级，如果多个前置（或者后置）通知应用到一个连接点上，这个优先级会有用
-public class TestServiceAop implements Ordered {
+//@Order(1) //通知的优先级，如果多个前置（或者后置）通知应用到一个连接点上，这个优先级会有用
+public class TestServiceAop /*implements Ordered*/ {
 
     /**
      * @DeclareParents注解由3部分组成：
@@ -29,16 +33,19 @@ public class TestServiceAop implements Ordered {
     //切入点方法必须为当前类的方法（不能是继承的方法，如果要切入继承的方法，必须重写些方法）
 //    @AfterReturning("execution(public * com.zhong.module.test.service.TestService.save(..))")
     public void afterSava(JoinPoint joinpoint){
-        System.out.println("afterSava");
+        System.out.println("after TestService.save()");
 //       throw new RuntimeException("");
     }
 
 
     //通知的优先级，如果多个前置（或者后置）通知应用到一个连接点上，这个优先级会有用
    // @Order(1)
-//    @Before("execution(public * com.zhong.module.test.service.TestService.save(..))")
-    public void jionPoinMeth(){
-        System.out.println(" @Before()");
+    @Around("execution(public * com.zhong.module.test.service.TestService.save(..))")
+    public void jionPoinMeth(ProceedingJoinPoint point) throws Throwable {
+        System.out.println(" point 前");
+        point.proceed(point.getArgs());
+        System.out.println(" point 后");
+
     }
 
 
@@ -47,9 +54,9 @@ public class TestServiceAop implements Ordered {
         System.out.println("xmlMethod（）");
         throw new Exception("");
     }
-
-    @Override
-    public int getOrder() { //实现Ordered 接口控制通知执行顺序
-        return 1;
-    }
+//
+//    @Override
+//    public int getOrder() { //实现Ordered 接口控制通知执行顺序
+//        return 1;
+//    }
 }

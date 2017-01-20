@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by zhong on 2016/11/7.
  */
-@Repository
+//@Repository
 public class B2bNoteDao extends DockingHibernateDao<B2bNote, Integer> {
 
 }

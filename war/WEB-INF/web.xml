@@ -11,7 +11,7 @@
     <!--配置了DispatcherServlet就需要配置这个了-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/applicationContext-hibernate-dao-moreDatasource.xml</param-value>
+        <param-value>classpath:spring/applicationContext-jpa-dao.xml</param-value>
     </context-param>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

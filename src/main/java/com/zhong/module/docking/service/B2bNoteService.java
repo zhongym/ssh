@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Created by zhong on 2016/11/7.
  */
-@Service
+//@Service
 public class B2bNoteService extends DockingEntityManager<B2bNoteDao, B2bNote, Integer> implements IB2bNoteService {
 
     private static Logger logger = Logger.getLogger(B2bNoteService.class);
