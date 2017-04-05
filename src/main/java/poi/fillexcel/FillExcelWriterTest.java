@@ -2,6 +2,8 @@ package poi.fillexcel;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +19,21 @@ import java.util.List;
  */
 @Ignore("手动测试")
 public class FillExcelWriterTest {
-	
+	private static Logger log = LoggerFactory.getLogger(FillExcelWriterTest.class);
+
+	public static void main(String[] args) {
+		log.info("afdsafddsafsafsa");
+		System.out.println("aaaaaaaaaaaaaaaaa");
+	}
+
+	@Test
+	public void testString(){
+		String setStr = "set123213";
+        String set1 = setStr.substring(setStr.indexOf("set")+"set".length());
+        System.out.println(set1);
+//        Long set = Long.valueOf(setStr.substring(setStr.indexOf("set")));
+    }
+
     @Test
     public void testExcelWriter() throws IOException {
     	Order order = new Order();
